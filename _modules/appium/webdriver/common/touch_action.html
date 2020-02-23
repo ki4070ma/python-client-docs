@@ -1,0 +1,250 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>appium.webdriver.common.touch_action &#8212; appium  documentation</title>
+    <link rel="stylesheet" href="../../../../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../../../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">appium  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for appium.webdriver.common.touch_action</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python</span>
+
+<span class="c1"># Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);</span>
+<span class="c1"># you may not use this file except in compliance with the License.</span>
+<span class="c1"># You may obtain a copy of the License at</span>
+<span class="c1">#</span>
+<span class="c1">#     http://www.apache.org/licenses/LICENSE-2.0</span>
+<span class="c1">#</span>
+<span class="c1"># Unless required by applicable law or agreed to in writing, software</span>
+<span class="c1"># distributed under the License is distributed on an &quot;AS IS&quot; BASIS,</span>
+<span class="c1"># WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</span>
+<span class="c1"># See the License for the specific language governing permissions and</span>
+<span class="c1"># limitations under the License.</span>
+
+
+<span class="c1"># The Selenium team implemented a version of the Touch Action API in their code</span>
+<span class="c1"># (https://code.google.com/p/selenium/source/browse/py/selenium/webdriver/common/touch_actions.py)</span>
+<span class="c1"># but it is deficient in many ways, and does not work in such a way as to be</span>
+<span class="c1"># amenable to Appium&#39;s use of iOS UIAutomation and Android UIAutomator</span>
+<span class="c1"># So it is reimplemented here.</span>
+<span class="c1">#</span>
+<span class="c1"># Theirs is `TouchActions`. Appium&#39;s is `TouchAction`.</span>
+
+<span class="c1"># pylint: disable=no-self-use</span>
+
+<span class="kn">import</span> <span class="nn">copy</span>
+
+<span class="kn">from</span> <span class="nn">appium.webdriver.mobilecommand</span> <span class="k">import</span> <span class="n">MobileCommand</span> <span class="k">as</span> <span class="n">Command</span>
+
+
+<div class="viewcode-block" id="TouchAction"><a class="viewcode-back" href="../../../../appium.webdriver.common.html#appium.webdriver.common.touch_action.TouchAction">[docs]</a><span class="k">class</span> <span class="nc">TouchAction</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">driver</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_driver</span> <span class="o">=</span> <span class="n">driver</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_actions</span> <span class="o">=</span> <span class="p">[]</span>
+
+<div class="viewcode-block" id="TouchAction.tap"><a class="viewcode-back" href="../../../../appium.webdriver.common.html#appium.webdriver.common.touch_action.TouchAction.tap">[docs]</a>    <span class="k">def</span> <span class="nf">tap</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">element</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">count</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Perform a tap action on the element</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            element (`appium.webdriver.webelement.WebElement`): the element to tap</span>
+<span class="sd">            x (:obj:`int`, optional): x coordinate to tap, relative to the top left corner of the element.</span>
+<span class="sd">            y (:obj:`int`, optional): y coordinate. If y is used, x must also be set, and vice versa</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            `TouchAction`: self instance</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">opts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_opts</span><span class="p">(</span><span class="n">element</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+        <span class="n">opts</span><span class="p">[</span><span class="s1">&#39;count&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">count</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_add_action</span><span class="p">(</span><span class="s1">&#39;tap&#39;</span><span class="p">,</span> <span class="n">opts</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+<div class="viewcode-block" id="TouchAction.press"><a class="viewcode-back" href="../../../../appium.webdriver.common.html#appium.webdriver.common.touch_action.TouchAction.press">[docs]</a>    <span class="k">def</span> <span class="nf">press</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">el</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">pressure</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Begin a chain with a press down action at a particular element or point</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            el (:obj:`appium.webdriver.webelement.WebElement`, optional): the element to press</span>
+<span class="sd">            x (:obj:`int`, optional): x coordiate to press. If y is used, x must also be set</span>
+<span class="sd">            y (:obj:`int`, optional): y coordiate to press. If x is used, y must also be set</span>
+<span class="sd">            pressure (:obj:`float`, optional): [iOS Only] press as force touch. Read the description of `force` property on Apple&#39;s UITouch class</span>
+<span class="sd">                                (https://developer.apple.com/documentation/uikit/uitouch?language=objc) for more details on possible value ranges.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            `TouchAction`: self instance</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_add_action</span><span class="p">(</span><span class="s1">&#39;press&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_opts</span><span class="p">(</span><span class="n">el</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">pressure</span><span class="o">=</span><span class="n">pressure</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+<div class="viewcode-block" id="TouchAction.long_press"><a class="viewcode-back" href="../../../../appium.webdriver.common.html#appium.webdriver.common.touch_action.TouchAction.long_press">[docs]</a>    <span class="k">def</span> <span class="nf">long_press</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">el</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">duration</span><span class="o">=</span><span class="mi">1000</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Begin a chain with a press down that lasts `duration` milliseconds</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            el (:obj:`appium.webdriver.webelement.WebElement`, optional): the element to press</span>
+<span class="sd">            x (:obj:`int`, optional): x coordiate to press. If y is used, x must also be set</span>
+<span class="sd">            y (:obj:`int`, optional): y coordiate to press. If x is used, y must also be set</span>
+<span class="sd">            duration (:obj:`int`, optional): Duration to press</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            `TouchAction`: self instance</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_add_action</span><span class="p">(</span><span class="s1">&#39;longPress&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_opts</span><span class="p">(</span><span class="n">el</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">duration</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+<div class="viewcode-block" id="TouchAction.wait"><a class="viewcode-back" href="../../../../appium.webdriver.common.html#appium.webdriver.common.touch_action.TouchAction.wait">[docs]</a>    <span class="k">def</span> <span class="nf">wait</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ms</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Pause for `ms` milliseconds.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            ms (int): The time to pause</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            `TouchAction`: self instance</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">ms</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">ms</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="n">opts</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;ms&#39;</span><span class="p">:</span> <span class="n">ms</span><span class="p">}</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_add_action</span><span class="p">(</span><span class="s1">&#39;wait&#39;</span><span class="p">,</span> <span class="n">opts</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+<div class="viewcode-block" id="TouchAction.move_to"><a class="viewcode-back" href="../../../../appium.webdriver.common.html#appium.webdriver.common.touch_action.TouchAction.move_to">[docs]</a>    <span class="k">def</span> <span class="nf">move_to</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">el</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Move the pointer from the previous point to the element or point specified</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            el (:obj:`appium.webdriver.webelement.WebElement`, optional): the element to be moved to</span>
+<span class="sd">            x (:obj:`int`, optional): x coordiate to be moved to. If y is used, x must also be set</span>
+<span class="sd">            y (:obj:`int`, optional): y coordiate to be moved to. If x is used, y must also be set</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            `TouchAction`: self instance</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_add_action</span><span class="p">(</span><span class="s1">&#39;moveTo&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_opts</span><span class="p">(</span><span class="n">el</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+<div class="viewcode-block" id="TouchAction.release"><a class="viewcode-back" href="../../../../appium.webdriver.common.html#appium.webdriver.common.touch_action.TouchAction.release">[docs]</a>    <span class="k">def</span> <span class="nf">release</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;End the action by lifting the pointer off the screen</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            `TouchAction`: self instance</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_add_action</span><span class="p">(</span><span class="s1">&#39;release&#39;</span><span class="p">,</span> <span class="p">{})</span>
+
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+<div class="viewcode-block" id="TouchAction.perform"><a class="viewcode-back" href="../../../../appium.webdriver.common.html#appium.webdriver.common.touch_action.TouchAction.perform">[docs]</a>    <span class="k">def</span> <span class="nf">perform</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Perform the action by sending the commands to the server to be operated upon</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            `TouchAction`: self instance</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;actions&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_actions</span><span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">TOUCH_ACTION</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
+
+        <span class="c1"># get rid of actions so the object can be reused</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_actions</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">json_wire_gestures</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">gestures</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">action</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_actions</span><span class="p">:</span>
+            <span class="n">gestures</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">action</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">gestures</span>
+
+    <span class="k">def</span> <span class="nf">_add_action</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">action</span><span class="p">,</span> <span class="n">options</span><span class="p">):</span>
+        <span class="n">gesture</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;action&#39;</span><span class="p">:</span> <span class="n">action</span><span class="p">,</span>
+            <span class="s1">&#39;options&#39;</span><span class="p">:</span> <span class="n">options</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_actions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">gesture</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_get_opts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">element</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">duration</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">pressure</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="n">opts</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="n">element</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">opts</span><span class="p">[</span><span class="s1">&#39;element&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">element</span><span class="o">.</span><span class="n">id</span>
+
+        <span class="c1"># it makes no sense to have x but no y, or vice versa.</span>
+        <span class="k">if</span> <span class="n">x</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">y</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">opts</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">x</span>
+            <span class="n">opts</span><span class="p">[</span><span class="s1">&#39;y&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">y</span>
+
+        <span class="k">if</span> <span class="n">duration</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">opts</span><span class="p">[</span><span class="s1">&#39;duration&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">duration</span>
+
+        <span class="k">if</span> <span class="n">pressure</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">opts</span><span class="p">[</span><span class="s1">&#39;pressure&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pressure</span>
+
+        <span class="k">return</span> <span class="n">opts</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">appium  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2019, Author.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.0.
+    </div>
+  </body>
+</html>

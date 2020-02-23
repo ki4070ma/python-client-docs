@@ -1,0 +1,195 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>appium.webdriver.extensions.hw_actions &#8212; appium  documentation</title>
+    <link rel="stylesheet" href="../../../../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../../../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">appium  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for appium.webdriver.extensions.hw_actions</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python</span>
+
+<span class="c1"># Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);</span>
+<span class="c1"># you may not use this file except in compliance with the License.</span>
+<span class="c1"># You may obtain a copy of the License at</span>
+<span class="c1">#</span>
+<span class="c1">#     http://www.apache.org/licenses/LICENSE-2.0</span>
+<span class="c1">#</span>
+<span class="c1"># Unless required by applicable law or agreed to in writing, software</span>
+<span class="c1"># distributed under the License is distributed on an &quot;AS IS&quot; BASIS,</span>
+<span class="c1"># WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</span>
+<span class="c1"># See the License for the specific language governing permissions and</span>
+<span class="c1"># limitations under the License.</span>
+
+<span class="kn">from</span> <span class="nn">selenium</span> <span class="k">import</span> <span class="n">webdriver</span>
+
+<span class="kn">from</span> <span class="nn">..mobilecommand</span> <span class="k">import</span> <span class="n">MobileCommand</span> <span class="k">as</span> <span class="n">Command</span>
+
+
+<div class="viewcode-block" id="HardwareActions"><a class="viewcode-back" href="../../../../appium.webdriver.extensions.html#appium.webdriver.extensions.hw_actions.HardwareActions">[docs]</a><span class="k">class</span> <span class="nc">HardwareActions</span><span class="p">(</span><span class="n">webdriver</span><span class="o">.</span><span class="n">Remote</span><span class="p">):</span>
+
+<div class="viewcode-block" id="HardwareActions.lock"><a class="viewcode-back" href="../../../../appium.webdriver.extensions.html#appium.webdriver.extensions.hw_actions.HardwareActions.lock">[docs]</a>    <span class="k">def</span> <span class="nf">lock</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">seconds</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Lock the device. No changes are made if the device is already unlocked.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            seconds (optional): The duration to lock the device, in seconds.</span>
+<span class="sd">                The device is going to be locked forever until `unlock` is called</span>
+<span class="sd">                if it equals or is less than zero, otherwise this call blocks until</span>
+<span class="sd">                the timeout expires and unlocks the screen automatically.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            `appium.webdriver.webdriver.WebDriver`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">seconds</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">LOCK</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">LOCK</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;seconds&#39;</span><span class="p">:</span> <span class="n">seconds</span><span class="p">})</span>
+
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+<div class="viewcode-block" id="HardwareActions.unlock"><a class="viewcode-back" href="../../../../appium.webdriver.extensions.html#appium.webdriver.extensions.hw_actions.HardwareActions.unlock">[docs]</a>    <span class="k">def</span> <span class="nf">unlock</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Unlock the device. No changes are made if the device is already locked.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            `appium.webdriver.webdriver.WebDriver`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">UNLOCK</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+<div class="viewcode-block" id="HardwareActions.is_locked"><a class="viewcode-back" href="../../../../appium.webdriver.extensions.html#appium.webdriver.extensions.hw_actions.HardwareActions.is_locked">[docs]</a>    <span class="k">def</span> <span class="nf">is_locked</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Checks whether the device is locked.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bool: `True` if the device is locked</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">IS_LOCKED</span><span class="p">)[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="HardwareActions.shake"><a class="viewcode-back" href="../../../../appium.webdriver.extensions.html#appium.webdriver.extensions.hw_actions.HardwareActions.shake">[docs]</a>    <span class="k">def</span> <span class="nf">shake</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Shake the device.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            `appium.webdriver.webdriver.WebDriver`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">SHAKE</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+<div class="viewcode-block" id="HardwareActions.touch_id"><a class="viewcode-back" href="../../../../appium.webdriver.extensions.html#appium.webdriver.extensions.hw_actions.HardwareActions.touch_id">[docs]</a>    <span class="k">def</span> <span class="nf">touch_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">match</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Simulate touchId on iOS Simulator</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            match (bool): Simulates a successful touch (`True`) or a failed touch (`False`)</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            `appium.webdriver.webdriver.WebDriver`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;match&#39;</span><span class="p">:</span> <span class="n">match</span>
+        <span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">TOUCH_ID</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+<div class="viewcode-block" id="HardwareActions.toggle_touch_id_enrollment"><a class="viewcode-back" href="../../../../appium.webdriver.extensions.html#appium.webdriver.extensions.hw_actions.HardwareActions.toggle_touch_id_enrollment">[docs]</a>    <span class="k">def</span> <span class="nf">toggle_touch_id_enrollment</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Toggle enroll touchId on iOS Simulator</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            `appium.webdriver.webdriver.WebDriver`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">TOGGLE_TOUCH_ID_ENROLLMENT</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+<div class="viewcode-block" id="HardwareActions.finger_print"><a class="viewcode-back" href="../../../../appium.webdriver.extensions.html#appium.webdriver.extensions.hw_actions.HardwareActions.finger_print">[docs]</a>    <span class="k">def</span> <span class="nf">finger_print</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">finger_id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Authenticate users by using their finger print scans on supported Android emulators.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            finger_id (int): Finger prints stored in Android Keystore system (from 1 to 10)</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            TODO</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">FINGER_PRINT</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;fingerprintId&#39;</span><span class="p">:</span> <span class="n">finger_id</span><span class="p">})[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span></div>
+
+    <span class="c1"># pylint: disable=protected-access</span>
+
+    <span class="k">def</span> <span class="nf">_addCommands</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">command_executor</span><span class="o">.</span><span class="n">_commands</span><span class="p">[</span><span class="n">Command</span><span class="o">.</span><span class="n">LOCK</span><span class="p">]</span> <span class="o">=</span> \
+            <span class="p">(</span><span class="s1">&#39;POST&#39;</span><span class="p">,</span> <span class="s1">&#39;/session/$sessionId/appium/device/lock&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">command_executor</span><span class="o">.</span><span class="n">_commands</span><span class="p">[</span><span class="n">Command</span><span class="o">.</span><span class="n">UNLOCK</span><span class="p">]</span> <span class="o">=</span> \
+            <span class="p">(</span><span class="s1">&#39;POST&#39;</span><span class="p">,</span> <span class="s1">&#39;/session/$sessionId/appium/device/unlock&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">command_executor</span><span class="o">.</span><span class="n">_commands</span><span class="p">[</span><span class="n">Command</span><span class="o">.</span><span class="n">IS_LOCKED</span><span class="p">]</span> <span class="o">=</span> \
+            <span class="p">(</span><span class="s1">&#39;POST&#39;</span><span class="p">,</span> <span class="s1">&#39;/session/$sessionId/appium/device/is_locked&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">command_executor</span><span class="o">.</span><span class="n">_commands</span><span class="p">[</span><span class="n">Command</span><span class="o">.</span><span class="n">SHAKE</span><span class="p">]</span> <span class="o">=</span> \
+            <span class="p">(</span><span class="s1">&#39;POST&#39;</span><span class="p">,</span> <span class="s1">&#39;/session/$sessionId/appium/device/shake&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">command_executor</span><span class="o">.</span><span class="n">_commands</span><span class="p">[</span><span class="n">Command</span><span class="o">.</span><span class="n">TOUCH_ID</span><span class="p">]</span> <span class="o">=</span> \
+            <span class="p">(</span><span class="s1">&#39;POST&#39;</span><span class="p">,</span> <span class="s1">&#39;/session/$sessionId/appium/simulator/touch_id&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">command_executor</span><span class="o">.</span><span class="n">_commands</span><span class="p">[</span><span class="n">Command</span><span class="o">.</span><span class="n">TOGGLE_TOUCH_ID_ENROLLMENT</span><span class="p">]</span> <span class="o">=</span> \
+            <span class="p">(</span><span class="s1">&#39;POST&#39;</span><span class="p">,</span> <span class="s1">&#39;/session/$sessionId/appium/simulator/toggle_touch_id_enrollment&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">command_executor</span><span class="o">.</span><span class="n">_commands</span><span class="p">[</span><span class="n">Command</span><span class="o">.</span><span class="n">FINGER_PRINT</span><span class="p">]</span> <span class="o">=</span> \
+            <span class="p">(</span><span class="s1">&#39;POST&#39;</span><span class="p">,</span> <span class="s1">&#39;/session/$sessionId/appium/device/finger_print&#39;</span><span class="p">)</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">appium  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2019, Author.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.0.
+    </div>
+  </body>
+</html>

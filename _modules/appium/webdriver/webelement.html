@@ -1,0 +1,420 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>appium.webdriver.webelement &#8212; appium  documentation</title>
+    <link rel="stylesheet" href="../../../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">appium  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for appium.webdriver.webelement</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python</span>
+
+<span class="c1"># Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);</span>
+<span class="c1"># you may not use this file except in compliance with the License.</span>
+<span class="c1"># You may obtain a copy of the License at</span>
+<span class="c1">#</span>
+<span class="c1">#     http://www.apache.org/licenses/LICENSE-2.0</span>
+<span class="c1">#</span>
+<span class="c1"># Unless required by applicable law or agreed to in writing, software</span>
+<span class="c1"># distributed under the License is distributed on an &quot;AS IS&quot; BASIS,</span>
+<span class="c1"># WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</span>
+<span class="c1"># See the License for the specific language governing permissions and</span>
+<span class="c1"># limitations under the License.</span>
+
+<span class="kn">import</span> <span class="nn">json</span>
+
+<span class="kn">from</span> <span class="nn">selenium.webdriver.common.by</span> <span class="k">import</span> <span class="n">By</span>
+<span class="kn">from</span> <span class="nn">selenium.webdriver.remote.command</span> <span class="k">import</span> <span class="n">Command</span> <span class="k">as</span> <span class="n">RemoteCommand</span>
+
+<span class="kn">from</span> <span class="nn">appium.webdriver.common.mobileby</span> <span class="k">import</span> <span class="n">MobileBy</span>
+
+<span class="kn">from</span> <span class="nn">.extensions.search_context</span> <span class="k">import</span> <span class="n">AppiumWebElementSearchContext</span>
+<span class="kn">from</span> <span class="nn">.mobilecommand</span> <span class="k">import</span> <span class="n">MobileCommand</span> <span class="k">as</span> <span class="n">Command</span>
+
+<span class="c1"># Python 3 imports</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="nb">str</span> <span class="o">=</span> <span class="n">basestring</span>
+<span class="k">except</span> <span class="ne">NameError</span><span class="p">:</span>
+    <span class="k">pass</span>
+
+
+<div class="viewcode-block" id="WebElement"><a class="viewcode-back" href="../../../appium.webdriver.html#appium.webdriver.webelement.WebElement">[docs]</a><span class="k">class</span> <span class="nc">WebElement</span><span class="p">(</span><span class="n">AppiumWebElementSearchContext</span><span class="p">):</span>
+    <span class="c1"># Override</span>
+<div class="viewcode-block" id="WebElement.get_attribute"><a class="viewcode-back" href="../../../appium.webdriver.html#appium.webdriver.webelement.WebElement.get_attribute">[docs]</a>    <span class="k">def</span> <span class="nf">get_attribute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Gets the given attribute or property of the element.</span>
+
+<span class="sd">        This method will first try to return the value of a property with the</span>
+<span class="sd">        given name. If a property with that name doesn&#39;t exist, it returns the</span>
+<span class="sd">        value of the attribute with the same name. If there&#39;s no attribute with</span>
+<span class="sd">        that name, ``None`` is returned.</span>
+
+<span class="sd">        Values which are considered truthy, that is equals &quot;true&quot; or &quot;false&quot;,</span>
+<span class="sd">        are returned as booleans.  All other non-``None`` values are returned</span>
+<span class="sd">        as strings.  For attributes or properties which do not exist, ``None``</span>
+<span class="sd">        is returned.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            name (str): Name of the attribute/property to retrieve.</span>
+
+<span class="sd">        Usage:</span>
+<span class="sd">            # Check if the &quot;active&quot; CSS class is applied to an element.</span>
+<span class="sd">            is_active = &quot;active&quot; in target_element.get_attribute(&quot;class&quot;)</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: The given attribute or property of the element</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">resp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_execute</span><span class="p">(</span><span class="n">RemoteCommand</span><span class="o">.</span><span class="n">GET_ELEMENT_ATTRIBUTE</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="n">name</span><span class="p">})</span>
+        <span class="n">attributeValue</span> <span class="o">=</span> <span class="n">resp</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;value&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">attributeValue</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">attributeValue</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">attributeValue</span> <span class="o">=</span> <span class="n">unicode</span><span class="p">(</span><span class="n">attributeValue</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">name</span> <span class="o">!=</span> <span class="s1">&#39;value&#39;</span> <span class="ow">and</span> <span class="n">attributeValue</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;true&#39;</span><span class="p">,</span> <span class="s1">&#39;false&#39;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">attributeValue</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">attributeValue</span></div>
+
+    <span class="c1"># Override</span>
+<div class="viewcode-block" id="WebElement.is_displayed"><a class="viewcode-back" href="../../../appium.webdriver.html#appium.webdriver.webelement.WebElement.is_displayed">[docs]</a>    <span class="k">def</span> <span class="nf">is_displayed</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Whether the element is visible to a user.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_execute</span><span class="p">(</span><span class="n">RemoteCommand</span><span class="o">.</span><span class="n">IS_ELEMENT_DISPLAYED</span><span class="p">)[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="WebElement.find_element_by_ios_uiautomation"><a class="viewcode-back" href="../../../appium.webdriver.html#appium.webdriver.webelement.WebElement.find_element_by_ios_uiautomation">[docs]</a>    <span class="k">def</span> <span class="nf">find_element_by_ios_uiautomation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">uia_string</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Finds an element by uiautomation in iOS.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            uia_string (str): The element name in the iOS UIAutomation library</span>
+
+<span class="sd">        Usage:</span>
+<span class="sd">            driver.find_element_by_ios_uiautomation(&#39;.elements()[1].cells()[2]&#39;)</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            `appium.webdriver.webelement.WebElement`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="n">MobileBy</span><span class="o">.</span><span class="n">IOS_UIAUTOMATION</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">uia_string</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="WebElement.find_elements_by_ios_uiautomation"><a class="viewcode-back" href="../../../appium.webdriver.html#appium.webdriver.webelement.WebElement.find_elements_by_ios_uiautomation">[docs]</a>    <span class="k">def</span> <span class="nf">find_elements_by_ios_uiautomation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">uia_string</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Finds elements by uiautomation in iOS.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            uia_string (str): The element name in the iOS UIAutomation library</span>
+
+<span class="sd">        Usage:</span>
+<span class="sd">            driver.find_elements_by_ios_uiautomation(&#39;.elements()[1].cells()[2]&#39;)</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            :obj:`list` of :obj:`appium.webdriver.webelement.WebElement`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_elements</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="n">MobileBy</span><span class="o">.</span><span class="n">IOS_UIAUTOMATION</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">uia_string</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="WebElement.find_element_by_ios_predicate"><a class="viewcode-back" href="../../../appium.webdriver.html#appium.webdriver.webelement.WebElement.find_element_by_ios_predicate">[docs]</a>    <span class="k">def</span> <span class="nf">find_element_by_ios_predicate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">predicate_string</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Find an element by ios predicate string.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            predicate_string (str): The predicate string</span>
+
+<span class="sd">        Usage:</span>
+<span class="sd">            driver.find_element_by_ios_predicate(&#39;label == &quot;myLabel&quot;&#39;)</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            `appium.webdriver.webelement.WebElement`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="n">MobileBy</span><span class="o">.</span><span class="n">IOS_PREDICATE</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">predicate_string</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="WebElement.find_elements_by_ios_predicate"><a class="viewcode-back" href="../../../appium.webdriver.html#appium.webdriver.webelement.WebElement.find_elements_by_ios_predicate">[docs]</a>    <span class="k">def</span> <span class="nf">find_elements_by_ios_predicate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">predicate_string</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Finds elements by ios predicate string.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            predicate_string (str): The predicate string</span>
+
+<span class="sd">        Usage:</span>
+<span class="sd">            driver.find_elements_by_ios_predicate(&#39;label == &quot;myLabel&quot;&#39;)</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            :obj:`list` of :obj:`appium.webdriver.webelement.WebElement`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_elements</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="n">MobileBy</span><span class="o">.</span><span class="n">IOS_PREDICATE</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">predicate_string</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="WebElement.find_element_by_ios_class_chain"><a class="viewcode-back" href="../../../appium.webdriver.html#appium.webdriver.webelement.WebElement.find_element_by_ios_class_chain">[docs]</a>    <span class="k">def</span> <span class="nf">find_element_by_ios_class_chain</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">class_chain_string</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Find an element by ios class chain string.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            class_chain_string (str): The class chain string</span>
+
+<span class="sd">        Usage:</span>
+<span class="sd">            driver.find_element_by_ios_class_chain(&#39;XCUIElementTypeWindow/XCUIElementTypeButton[3]&#39;)</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            `appium.webdriver.webelement.WebElement`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="n">MobileBy</span><span class="o">.</span><span class="n">IOS_CLASS_CHAIN</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">class_chain_string</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="WebElement.find_elements_by_ios_class_chain"><a class="viewcode-back" href="../../../appium.webdriver.html#appium.webdriver.webelement.WebElement.find_elements_by_ios_class_chain">[docs]</a>    <span class="k">def</span> <span class="nf">find_elements_by_ios_class_chain</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">class_chain_string</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Finds elements by ios class chain string.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            class_chain_string (str): The class chain string</span>
+
+<span class="sd">        Usage:</span>
+<span class="sd">            driver.find_elements_by_ios_class_chain(&#39;XCUIElementTypeWindow[2]/XCUIElementTypeAny[-2]&#39;)</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            :obj:`list` of :obj:`appium.webdriver.webelement.WebElement`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_elements</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="n">MobileBy</span><span class="o">.</span><span class="n">IOS_CLASS_CHAIN</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">class_chain_string</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="WebElement.find_element_by_android_uiautomator"><a class="viewcode-back" href="../../../appium.webdriver.html#appium.webdriver.webelement.WebElement.find_element_by_android_uiautomator">[docs]</a>    <span class="k">def</span> <span class="nf">find_element_by_android_uiautomator</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">uia_string</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Finds element by uiautomator in Android.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            uia_string (str): The element name in the Android UIAutomator library</span>
+
+<span class="sd">        Usage:</span>
+<span class="sd">            driver.find_element_by_android_uiautomator(&#39;.elements()[1].cells()[2]&#39;)</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            `appium.webdriver.webelement.WebElement`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="n">MobileBy</span><span class="o">.</span><span class="n">ANDROID_UIAUTOMATOR</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">uia_string</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="WebElement.find_elements_by_android_uiautomator"><a class="viewcode-back" href="../../../appium.webdriver.html#appium.webdriver.webelement.WebElement.find_elements_by_android_uiautomator">[docs]</a>    <span class="k">def</span> <span class="nf">find_elements_by_android_uiautomator</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">uia_string</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Finds elements by uiautomator in Android.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            uia_string (str): The element name in the Android UIAutomator library</span>
+
+<span class="sd">        Usage:</span>
+<span class="sd">            driver.find_elements_by_android_uiautomator(&#39;.elements()[1].cells()[2]&#39;)</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            :obj:`list` of :obj:`appium.webdriver.webelement.WebElement`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_elements</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="n">MobileBy</span><span class="o">.</span><span class="n">ANDROID_UIAUTOMATOR</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">uia_string</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="WebElement.find_element_by_accessibility_id"><a class="viewcode-back" href="../../../appium.webdriver.html#appium.webdriver.webelement.WebElement.find_element_by_accessibility_id">[docs]</a>    <span class="k">def</span> <span class="nf">find_element_by_accessibility_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">accessibility_id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Finds an element by accessibility id.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            accessibility_id (str): a string corresponding to a recursive element search using the</span>
+<span class="sd">                Id/Name that the native Accessibility options utilize</span>
+
+<span class="sd">        Usage:</span>
+<span class="sd">            driver.find_element_by_accessibility_id()</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            `appium.webdriver.webelement.WebElement`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="n">MobileBy</span><span class="o">.</span><span class="n">ACCESSIBILITY_ID</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">accessibility_id</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="WebElement.find_elements_by_accessibility_id"><a class="viewcode-back" href="../../../appium.webdriver.html#appium.webdriver.webelement.WebElement.find_elements_by_accessibility_id">[docs]</a>    <span class="k">def</span> <span class="nf">find_elements_by_accessibility_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">accessibility_id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Finds elements by accessibility id.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            accessibility_id (str): a string corresponding to a recursive element search using the</span>
+<span class="sd">                Id/Name that the native Accessibility options utilize</span>
+
+<span class="sd">        Usage:</span>
+<span class="sd">            driver.find_elements_by_accessibility_id()</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            :obj:`list` of :obj:`appium.webdriver.webelement.WebElement`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_elements</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="n">MobileBy</span><span class="o">.</span><span class="n">ACCESSIBILITY_ID</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">accessibility_id</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="WebElement.find_element"><a class="viewcode-back" href="../../../appium.webdriver.html#appium.webdriver.webelement.WebElement.find_element">[docs]</a>    <span class="k">def</span> <span class="nf">find_element</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">by</span><span class="o">=</span><span class="n">By</span><span class="o">.</span><span class="n">ID</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Find an element given a By strategy and locator</span>
+
+<span class="sd">        Prefer the find_element_by_* methods when possible.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            by (:obj:`str`, optional): The strategy</span>
+<span class="sd">            value (:obj:`str`, optional): The locator</span>
+
+<span class="sd">        Usage:</span>
+<span class="sd">            element = element.find_element(By.ID, &#39;foo&#39;)</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            `appium.webdriver.webelement.WebElement`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># TODO: If we need, we should enable below converter for Web context</span>
+        <span class="c1"># if self._w3c:</span>
+        <span class="c1">#     if by == By.ID:</span>
+        <span class="c1">#         by = By.CSS_SELECTOR</span>
+        <span class="c1">#         value = &#39;[id=&quot;%s&quot;]&#39; % value</span>
+        <span class="c1">#     elif by == By.TAG_NAME:</span>
+        <span class="c1">#         by = By.CSS_SELECTOR</span>
+        <span class="c1">#     elif by == By.CLASS_NAME:</span>
+        <span class="c1">#         by = By.CSS_SELECTOR</span>
+        <span class="c1">#         value = &quot;.%s&quot; % value</span>
+        <span class="c1">#     elif by == By.NAME:</span>
+        <span class="c1">#         by = By.CSS_SELECTOR</span>
+        <span class="c1">#         value = &#39;[name=&quot;%s&quot;]&#39; % value</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_execute</span><span class="p">(</span><span class="n">RemoteCommand</span><span class="o">.</span><span class="n">FIND_CHILD_ELEMENT</span><span class="p">,</span>
+                             <span class="p">{</span><span class="s2">&quot;using&quot;</span><span class="p">:</span> <span class="n">by</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="n">value</span><span class="p">})[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="WebElement.find_elements"><a class="viewcode-back" href="../../../appium.webdriver.html#appium.webdriver.webelement.WebElement.find_elements">[docs]</a>    <span class="k">def</span> <span class="nf">find_elements</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">by</span><span class="o">=</span><span class="n">By</span><span class="o">.</span><span class="n">ID</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Find elements given a By strategy and locator</span>
+
+<span class="sd">        Prefer the find_elements_by_* methods when possible.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            by (:obj:`str`, optional): The strategy</span>
+<span class="sd">            value (:obj:`str`, optional): The locator</span>
+
+<span class="sd">        Usage:</span>
+<span class="sd">            element = element.find_elements(By.CLASS_NAME, &#39;foo&#39;)</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            :obj:`list` of :obj:`appium.webdriver.webelement.WebElement`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># TODO: If we need, we should enable below converter for Web context</span>
+        <span class="c1"># if self._w3c:</span>
+        <span class="c1">#     if by == By.ID:</span>
+        <span class="c1">#         by = By.CSS_SELECTOR</span>
+        <span class="c1">#         value = &#39;[id=&quot;%s&quot;]&#39; % value</span>
+        <span class="c1">#     elif by == By.TAG_NAME:</span>
+        <span class="c1">#         by = By.CSS_SELECTOR</span>
+        <span class="c1">#     elif by == By.CLASS_NAME:</span>
+        <span class="c1">#         by = By.CSS_SELECTOR</span>
+        <span class="c1">#         value = &quot;.%s&quot; % value</span>
+        <span class="c1">#     elif by == By.NAME:</span>
+        <span class="c1">#         by = By.CSS_SELECTOR</span>
+        <span class="c1">#         value = &#39;[name=&quot;%s&quot;]&#39; % value</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_execute</span><span class="p">(</span><span class="n">RemoteCommand</span><span class="o">.</span><span class="n">FIND_CHILD_ELEMENTS</span><span class="p">,</span>
+                             <span class="p">{</span><span class="s2">&quot;using&quot;</span><span class="p">:</span> <span class="n">by</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="n">value</span><span class="p">})[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="WebElement.set_text"><a class="viewcode-back" href="../../../appium.webdriver.html#appium.webdriver.webelement.WebElement.set_text">[docs]</a>    <span class="k">def</span> <span class="nf">set_text</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keys</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Sends text to the element.</span>
+
+<span class="sd">        Previous text is removed.</span>
+<span class="sd">        Android only.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            keys (str): the text to be sent to the element.</span>
+
+<span class="sd">        Usage:</span>
+<span class="sd">            element.set_text(&#39;some text&#39;)</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            `appium.webdriver.webelement.WebElement`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_id</span><span class="p">,</span>
+            <span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">keys</span><span class="p">]</span>
+        <span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">REPLACE_KEYS</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">location_in_view</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Gets the location of an element relative to the view.</span>
+
+<span class="sd">        Usage:</span>
+<span class="sd">            location = element.location_in_view</span>
+<span class="sd">            x = location[&#39;x&#39;]</span>
+<span class="sd">            y = location[&#39;y&#39;]</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            dict: The location of an element relative to the view</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">LOCATION_IN_VIEW</span><span class="p">)[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span>
+
+<div class="viewcode-block" id="WebElement.set_value"><a class="viewcode-back" href="../../../appium.webdriver.html#appium.webdriver.webelement.WebElement.set_value">[docs]</a>    <span class="k">def</span> <span class="nf">set_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set the value on this element in the application</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            value (str): The value to be set</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            `appium.webdriver.webelement.WebElement`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+            <span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">value</span><span class="p">],</span>
+        <span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">SET_IMMEDIATE_VALUE</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+<div class="viewcode-block" id="WebElement.clear"><a class="viewcode-back" href="../../../appium.webdriver.html#appium.webdriver.webelement.WebElement.clear">[docs]</a>    <span class="k">def</span> <span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Clears text.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            `appium.webdriver.webelement.WebElement`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">CLEAR</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">appium  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2019, Author.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.0.
+    </div>
+  </body>
+</html>

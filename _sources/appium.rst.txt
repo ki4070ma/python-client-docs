@@ -1,0 +1,38 @@
+appium package
+==============
+
+Subpackages
+-----------
+
+.. toctree::
+
+   appium.common
+   appium.webdriver
+
+Submodules
+----------
+
+appium.saucetestcase module
+---------------------------
+
+.. automodule:: appium.saucetestcase
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+appium.version module
+---------------------
+
+.. automodule:: appium.version
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: appium
+   :members:
+   :undoc-members:
+   :show-inheritance:

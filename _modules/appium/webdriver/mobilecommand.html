@@ -1,0 +1,182 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>appium.webdriver.mobilecommand &#8212; appium  documentation</title>
+    <link rel="stylesheet" href="../../../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">appium  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for appium.webdriver.mobilecommand</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python</span>
+
+<span class="c1"># Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);</span>
+<span class="c1"># you may not use this file except in compliance with the License.</span>
+<span class="c1"># You may obtain a copy of the License at</span>
+<span class="c1">#</span>
+<span class="c1">#     http://www.apache.org/licenses/LICENSE-2.0</span>
+<span class="c1">#</span>
+<span class="c1"># Unless required by applicable law or agreed to in writing, software</span>
+<span class="c1"># distributed under the License is distributed on an &quot;AS IS&quot; BASIS,</span>
+<span class="c1"># WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</span>
+<span class="c1"># See the License for the specific language governing permissions and</span>
+<span class="c1"># limitations under the License.</span>
+
+
+<div class="viewcode-block" id="MobileCommand"><a class="viewcode-back" href="../../../appium.webdriver.html#appium.webdriver.mobilecommand.MobileCommand">[docs]</a><span class="k">class</span> <span class="nc">MobileCommand</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="c1"># Common</span>
+    <span class="n">GET_SESSION</span> <span class="o">=</span> <span class="s1">&#39;getSession&#39;</span>
+
+    <span class="n">GET_LOCATION</span> <span class="o">=</span> <span class="s1">&#39;getLocation&#39;</span>
+    <span class="n">SET_LOCATION</span> <span class="o">=</span> <span class="s1">&#39;setLocation&#39;</span>
+
+    <span class="n">GET_AVAILABLE_IME_ENGINES</span> <span class="o">=</span> <span class="s1">&#39;getAvailableIMEEngines&#39;</span>
+    <span class="n">IS_IME_ACTIVE</span> <span class="o">=</span> <span class="s1">&#39;isIMEActive&#39;</span>
+    <span class="n">ACTIVATE_IME_ENGINE</span> <span class="o">=</span> <span class="s1">&#39;activateIMEEngine&#39;</span>
+    <span class="n">DEACTIVATE_IME_ENGINE</span> <span class="o">=</span> <span class="s1">&#39;deactivateIMEEngine&#39;</span>
+    <span class="n">GET_ACTIVE_IME_ENGINE</span> <span class="o">=</span> <span class="s1">&#39;getActiveEngine&#39;</span>
+
+    <span class="n">CLEAR</span> <span class="o">=</span> <span class="s1">&#39;clear&#39;</span>
+    <span class="n">LOCATION_IN_VIEW</span> <span class="o">=</span> <span class="s1">&#39;locationInView&#39;</span>
+
+    <span class="n">CONTEXTS</span> <span class="o">=</span> <span class="s1">&#39;getContexts&#39;</span>
+    <span class="n">GET_CURRENT_CONTEXT</span> <span class="o">=</span> <span class="s1">&#39;getCurrentContext&#39;</span>
+    <span class="n">SWITCH_TO_CONTEXT</span> <span class="o">=</span> <span class="s1">&#39;switchToContext&#39;</span>
+
+    <span class="n">TOUCH_ACTION</span> <span class="o">=</span> <span class="s1">&#39;touchAction&#39;</span>
+    <span class="n">MULTI_ACTION</span> <span class="o">=</span> <span class="s1">&#39;multiAction&#39;</span>
+
+    <span class="n">SET_IMMEDIATE_VALUE</span> <span class="o">=</span> <span class="s1">&#39;setImmediateValue&#39;</span>
+    <span class="n">REPLACE_KEYS</span> <span class="o">=</span> <span class="s1">&#39;replaceKeys&#39;</span>
+
+    <span class="n">LAUNCH_APP</span> <span class="o">=</span> <span class="s1">&#39;launchApp&#39;</span>
+    <span class="n">CLOSE_APP</span> <span class="o">=</span> <span class="s1">&#39;closeApp&#39;</span>
+    <span class="n">RESET</span> <span class="o">=</span> <span class="s1">&#39;reset&#39;</span>
+    <span class="n">BACKGROUND</span> <span class="o">=</span> <span class="s1">&#39;background&#39;</span>
+    <span class="n">GET_APP_STRINGS</span> <span class="o">=</span> <span class="s1">&#39;getAppStrings&#39;</span>
+
+    <span class="n">IS_LOCKED</span> <span class="o">=</span> <span class="s1">&#39;isLocked&#39;</span>
+    <span class="n">LOCK</span> <span class="o">=</span> <span class="s1">&#39;lock&#39;</span>
+    <span class="n">UNLOCK</span> <span class="o">=</span> <span class="s1">&#39;unlock&#39;</span>
+    <span class="n">GET_DEVICE_TIME_GET</span> <span class="o">=</span> <span class="s1">&#39;getDeviceTimeGet&#39;</span>
+    <span class="n">GET_DEVICE_TIME_POST</span> <span class="o">=</span> <span class="s1">&#39;getDeviceTimePost&#39;</span>
+    <span class="n">INSTALL_APP</span> <span class="o">=</span> <span class="s1">&#39;installApp&#39;</span>
+    <span class="n">REMOVE_APP</span> <span class="o">=</span> <span class="s1">&#39;removeApp&#39;</span>
+    <span class="n">IS_APP_INSTALLED</span> <span class="o">=</span> <span class="s1">&#39;isAppInstalled&#39;</span>
+    <span class="n">TERMINATE_APP</span> <span class="o">=</span> <span class="s1">&#39;terminateApp&#39;</span>
+    <span class="n">ACTIVATE_APP</span> <span class="o">=</span> <span class="s1">&#39;activateApp&#39;</span>
+    <span class="n">QUERY_APP_STATE</span> <span class="o">=</span> <span class="s1">&#39;queryAppState&#39;</span>
+    <span class="n">SHAKE</span> <span class="o">=</span> <span class="s1">&#39;shake&#39;</span>
+    <span class="n">HIDE_KEYBOARD</span> <span class="o">=</span> <span class="s1">&#39;hideKeyboard&#39;</span>
+    <span class="n">PRESS_KEYCODE</span> <span class="o">=</span> <span class="s1">&#39;pressKeyCode&#39;</span>
+    <span class="n">LONG_PRESS_KEYCODE</span> <span class="o">=</span> <span class="s1">&#39;longPressKeyCode&#39;</span>
+    <span class="n">KEY_EVENT</span> <span class="o">=</span> <span class="s1">&#39;keyEvent&#39;</span>  <span class="c1"># Needed for Selendroid</span>
+    <span class="n">PUSH_FILE</span> <span class="o">=</span> <span class="s1">&#39;pushFile&#39;</span>
+    <span class="n">PULL_FILE</span> <span class="o">=</span> <span class="s1">&#39;pullFile&#39;</span>
+    <span class="n">PULL_FOLDER</span> <span class="o">=</span> <span class="s1">&#39;pullFolder&#39;</span>
+    <span class="n">GET_CLIPBOARD</span> <span class="o">=</span> <span class="s1">&#39;getClipboard&#39;</span>
+    <span class="n">SET_CLIPBOARD</span> <span class="o">=</span> <span class="s1">&#39;setClipboard&#39;</span>
+    <span class="n">FINGER_PRINT</span> <span class="o">=</span> <span class="s1">&#39;fingerPrint&#39;</span>
+    <span class="n">GET_SETTINGS</span> <span class="o">=</span> <span class="s1">&#39;getSettings&#39;</span>
+    <span class="n">UPDATE_SETTINGS</span> <span class="o">=</span> <span class="s1">&#39;updateSettings&#39;</span>
+    <span class="n">START_RECORDING_SCREEN</span> <span class="o">=</span> <span class="s1">&#39;startRecordingScreen&#39;</span>
+    <span class="n">STOP_RECORDING_SCREEN</span> <span class="o">=</span> <span class="s1">&#39;stopRecordingScreen&#39;</span>
+    <span class="n">COMPARE_IMAGES</span> <span class="o">=</span> <span class="s1">&#39;compareImages&#39;</span>
+    <span class="n">IS_KEYBOARD_SHOWN</span> <span class="o">=</span> <span class="s1">&#39;isKeyboardShown&#39;</span>
+
+    <span class="n">EXECUTE_DRIVER</span> <span class="o">=</span> <span class="s1">&#39;executeDriver&#39;</span>
+
+    <span class="c1"># Android</span>
+    <span class="n">OPEN_NOTIFICATIONS</span> <span class="o">=</span> <span class="s1">&#39;openNotifications&#39;</span>
+    <span class="n">START_ACTIVITY</span> <span class="o">=</span> <span class="s1">&#39;startActivity&#39;</span>
+    <span class="n">GET_CURRENT_ACTIVITY</span> <span class="o">=</span> <span class="s1">&#39;getCurrentActivity&#39;</span>
+    <span class="n">GET_CURRENT_PACKAGE</span> <span class="o">=</span> <span class="s1">&#39;getCurrentPackage&#39;</span>
+    <span class="n">GET_SYSTEM_BARS</span> <span class="o">=</span> <span class="s1">&#39;getSystemBars&#39;</span>
+    <span class="n">GET_DISPLAY_DENSITY</span> <span class="o">=</span> <span class="s1">&#39;getDisplayDensity&#39;</span>
+    <span class="n">TOGGLE_WIFI</span> <span class="o">=</span> <span class="s1">&#39;toggleWiFi&#39;</span>
+    <span class="n">TOGGLE_LOCATION_SERVICES</span> <span class="o">=</span> <span class="s1">&#39;toggleLocationServices&#39;</span>
+    <span class="n">END_TEST_COVERAGE</span> <span class="o">=</span> <span class="s1">&#39;endTestCoverage&#39;</span>
+    <span class="n">GET_PERFORMANCE_DATA_TYPES</span> <span class="o">=</span> <span class="s1">&#39;getPerformanceDataTypes&#39;</span>
+    <span class="n">GET_PERFORMANCE_DATA</span> <span class="o">=</span> <span class="s1">&#39;getPerformanceData&#39;</span>
+    <span class="n">GET_NETWORK_CONNECTION</span> <span class="o">=</span> <span class="s1">&#39;getNetworkConnection&#39;</span>
+    <span class="n">SET_NETWORK_CONNECTION</span> <span class="o">=</span> <span class="s1">&#39;setNetworkConnection&#39;</span>
+
+    <span class="c1"># Android Emulator</span>
+    <span class="n">SEND_SMS</span> <span class="o">=</span> <span class="s1">&#39;sendSms&#39;</span>
+    <span class="n">MAKE_GSM_CALL</span> <span class="o">=</span> <span class="s1">&#39;makeGsmCall&#39;</span>
+    <span class="n">SET_GSM_SIGNAL</span> <span class="o">=</span> <span class="s1">&#39;setGsmSignal&#39;</span>
+    <span class="n">SET_GSM_VOICE</span> <span class="o">=</span> <span class="s1">&#39;setGsmVoice&#39;</span>
+    <span class="n">SET_NETWORK_SPEED</span> <span class="o">=</span> <span class="s1">&#39;setNetworkSpeed&#39;</span>
+    <span class="n">SET_POWER_CAPACITY</span> <span class="o">=</span> <span class="s1">&#39;setPowerCapacity&#39;</span>
+    <span class="n">SET_POWER_AC</span> <span class="o">=</span> <span class="s1">&#39;setPowerAc&#39;</span>
+
+    <span class="c1"># iOS</span>
+    <span class="n">TOUCH_ID</span> <span class="o">=</span> <span class="s1">&#39;touchId&#39;</span>
+    <span class="n">TOGGLE_TOUCH_ID_ENROLLMENT</span> <span class="o">=</span> <span class="s1">&#39;toggleTouchIdEnrollment&#39;</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">appium  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2019, Author.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.0.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,497 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>appium.webdriver.common package &mdash; appium  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="appium.webdriver.extensions package" href="appium.webdriver.extensions.html" />
+    <link rel="prev" title="appium.webdriver package" href="appium.webdriver.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> appium
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="appium.html">appium package</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="appium.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="appium.common.html">appium.common package</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="appium.webdriver.html">appium.webdriver package</a><ul class="current">
+<li class="toctree-l4 current"><a class="reference internal" href="appium.webdriver.html#subpackages">Subpackages</a></li>
+<li class="toctree-l4"><a class="reference internal" href="appium.webdriver.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="appium.webdriver.html#module-appium.webdriver.appium_connection">appium.webdriver.appium_connection module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="appium.webdriver.html#module-appium.webdriver.appium_service">appium.webdriver.appium_service module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="appium.webdriver.html#module-appium.webdriver.applicationstate">appium.webdriver.applicationstate module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="appium.webdriver.html#module-appium.webdriver.clipboard_content_type">appium.webdriver.clipboard_content_type module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="appium.webdriver.html#module-appium.webdriver.connectiontype">appium.webdriver.connectiontype module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="appium.webdriver.html#module-appium.webdriver.errorhandler">appium.webdriver.errorhandler module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="appium.webdriver.html#module-appium.webdriver.mobilecommand">appium.webdriver.mobilecommand module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="appium.webdriver.html#module-appium.webdriver.switch_to">appium.webdriver.switch_to module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="appium.webdriver.html#module-appium.webdriver.webdriver">appium.webdriver.webdriver module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="appium.webdriver.html#module-appium.webdriver.webelement">appium.webdriver.webelement module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="appium.webdriver.html#module-appium.webdriver">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="appium.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="appium.html#module-appium.saucetestcase">appium.saucetestcase module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="appium.html#module-appium.version">appium.version module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="appium.html#module-appium">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">appium</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="appium.html">appium package</a> &raquo;</li>
+        
+          <li><a href="appium.webdriver.html">appium.webdriver package</a> &raquo;</li>
+        
+      <li>appium.webdriver.common package</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/appium.webdriver.common.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="appium-webdriver-common-package">
+<h1>appium.webdriver.common package<a class="headerlink" href="#appium-webdriver-common-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-appium.webdriver.common.mobileby">
+<span id="appium-webdriver-common-mobileby-module"></span><h2>appium.webdriver.common.mobileby module<a class="headerlink" href="#module-appium.webdriver.common.mobileby" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="appium.webdriver.common.mobileby.MobileBy">
+<em class="property">class </em><code class="sig-prename descclassname">appium.webdriver.common.mobileby.</code><code class="sig-name descname">MobileBy</code><a class="headerlink" href="#appium.webdriver.common.mobileby.MobileBy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">selenium.webdriver.common.by.By</span></code></p>
+<dl class="attribute">
+<dt id="appium.webdriver.common.mobileby.MobileBy.ACCESSIBILITY_ID">
+<code class="sig-name descname">ACCESSIBILITY_ID</code><em class="property"> = 'accessibility id'</em><a class="headerlink" href="#appium.webdriver.common.mobileby.MobileBy.ACCESSIBILITY_ID" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="appium.webdriver.common.mobileby.MobileBy.ANDROID_DATA_MATCHER">
+<code class="sig-name descname">ANDROID_DATA_MATCHER</code><em class="property"> = '-android datamatcher'</em><a class="headerlink" href="#appium.webdriver.common.mobileby.MobileBy.ANDROID_DATA_MATCHER" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="appium.webdriver.common.mobileby.MobileBy.ANDROID_UIAUTOMATOR">
+<code class="sig-name descname">ANDROID_UIAUTOMATOR</code><em class="property"> = '-android uiautomator'</em><a class="headerlink" href="#appium.webdriver.common.mobileby.MobileBy.ANDROID_UIAUTOMATOR" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="appium.webdriver.common.mobileby.MobileBy.ANDROID_VIEWTAG">
+<code class="sig-name descname">ANDROID_VIEWTAG</code><em class="property"> = '-android viewtag'</em><a class="headerlink" href="#appium.webdriver.common.mobileby.MobileBy.ANDROID_VIEWTAG" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="appium.webdriver.common.mobileby.MobileBy.ANDROID_VIEW_MATCHER">
+<code class="sig-name descname">ANDROID_VIEW_MATCHER</code><em class="property"> = '-android viewmatcher'</em><a class="headerlink" href="#appium.webdriver.common.mobileby.MobileBy.ANDROID_VIEW_MATCHER" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="appium.webdriver.common.mobileby.MobileBy.CUSTOM">
+<code class="sig-name descname">CUSTOM</code><em class="property"> = '-custom'</em><a class="headerlink" href="#appium.webdriver.common.mobileby.MobileBy.CUSTOM" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="appium.webdriver.common.mobileby.MobileBy.IMAGE">
+<code class="sig-name descname">IMAGE</code><em class="property"> = '-image'</em><a class="headerlink" href="#appium.webdriver.common.mobileby.MobileBy.IMAGE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="appium.webdriver.common.mobileby.MobileBy.IOS_CLASS_CHAIN">
+<code class="sig-name descname">IOS_CLASS_CHAIN</code><em class="property"> = '-ios class chain'</em><a class="headerlink" href="#appium.webdriver.common.mobileby.MobileBy.IOS_CLASS_CHAIN" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="appium.webdriver.common.mobileby.MobileBy.IOS_PREDICATE">
+<code class="sig-name descname">IOS_PREDICATE</code><em class="property"> = '-ios predicate string'</em><a class="headerlink" href="#appium.webdriver.common.mobileby.MobileBy.IOS_PREDICATE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="appium.webdriver.common.mobileby.MobileBy.IOS_UIAUTOMATION">
+<code class="sig-name descname">IOS_UIAUTOMATION</code><em class="property"> = '-ios uiautomation'</em><a class="headerlink" href="#appium.webdriver.common.mobileby.MobileBy.IOS_UIAUTOMATION" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="appium.webdriver.common.mobileby.MobileBy.WINDOWS_UI_AUTOMATION">
+<code class="sig-name descname">WINDOWS_UI_AUTOMATION</code><em class="property"> = '-windows uiautomation'</em><a class="headerlink" href="#appium.webdriver.common.mobileby.MobileBy.WINDOWS_UI_AUTOMATION" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-appium.webdriver.common.multi_action">
+<span id="appium-webdriver-common-multi-action-module"></span><h2>appium.webdriver.common.multi_action module<a class="headerlink" href="#module-appium.webdriver.common.multi_action" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="appium.webdriver.common.multi_action.MultiAction">
+<em class="property">class </em><code class="sig-prename descclassname">appium.webdriver.common.multi_action.</code><code class="sig-name descname">MultiAction</code><span class="sig-paren">(</span><em class="sig-param">driver</em>, <em class="sig-param">element=None</em><span class="sig-paren">)</span><a class="headerlink" href="#appium.webdriver.common.multi_action.MultiAction" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="method">
+<dt id="appium.webdriver.common.multi_action.MultiAction.add">
+<code class="sig-name descname">add</code><span class="sig-paren">(</span><em class="sig-param">*touch_actions</em><span class="sig-paren">)</span><a class="headerlink" href="#appium.webdriver.common.multi_action.MultiAction.add" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add TouchAction objects to the MultiAction, to be performed later.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>touch_actions</strong> (<cite>TouchAction</cite>) – one or more TouchAction objects describing a chain of actions to be performed by one finger</p>
+</dd>
+</dl>
+<dl>
+<dt>Usage:</dt><dd><p>a1 = TouchAction(driver)
+a1.press(el1).move_to(el2).release()
+a2 = TouchAction(driver)
+a2.press(el2).move_to(el1).release()</p>
+<p>MultiAction(driver).add(a1, a2)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="appium.webdriver.common.multi_action.MultiAction.json_wire_gestures">
+<em class="property">property </em><code class="sig-name descname">json_wire_gestures</code><a class="headerlink" href="#appium.webdriver.common.multi_action.MultiAction.json_wire_gestures" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="appium.webdriver.common.multi_action.MultiAction.perform">
+<code class="sig-name descname">perform</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#appium.webdriver.common.multi_action.MultiAction.perform" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform the actions stored in the object.</p>
+<dl>
+<dt>Usage:</dt><dd><p>a1 = TouchAction(driver)
+a1.press(el1).move_to(el2).release()
+a2 = TouchAction(driver)
+a2.press(el2).move_to(el1).release()</p>
+<p>MultiAction(driver).add(a1, a2).perform()</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-appium.webdriver.common.touch_action">
+<span id="appium-webdriver-common-touch-action-module"></span><h2>appium.webdriver.common.touch_action module<a class="headerlink" href="#module-appium.webdriver.common.touch_action" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="appium.webdriver.common.touch_action.TouchAction">
+<em class="property">class </em><code class="sig-prename descclassname">appium.webdriver.common.touch_action.</code><code class="sig-name descname">TouchAction</code><span class="sig-paren">(</span><em class="sig-param">driver=None</em><span class="sig-paren">)</span><a class="headerlink" href="#appium.webdriver.common.touch_action.TouchAction" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="method">
+<dt id="appium.webdriver.common.touch_action.TouchAction.json_wire_gestures">
+<em class="property">property </em><code class="sig-name descname">json_wire_gestures</code><a class="headerlink" href="#appium.webdriver.common.touch_action.TouchAction.json_wire_gestures" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="appium.webdriver.common.touch_action.TouchAction.long_press">
+<code class="sig-name descname">long_press</code><span class="sig-paren">(</span><em class="sig-param">el=None</em>, <em class="sig-param">x=None</em>, <em class="sig-param">y=None</em>, <em class="sig-param">duration=1000</em><span class="sig-paren">)</span><a class="headerlink" href="#appium.webdriver.common.touch_action.TouchAction.long_press" title="Permalink to this definition">¶</a></dt>
+<dd><p>Begin a chain with a press down that lasts <cite>duration</cite> milliseconds</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>el</strong> (<a class="reference internal" href="appium.webdriver.html#appium.webdriver.webelement.WebElement" title="appium.webdriver.webelement.WebElement"><code class="xref py py-obj docutils literal notranslate"><span class="pre">appium.webdriver.webelement.WebElement</span></code></a>, optional) – the element to press</p></li>
+<li><p><strong>x</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">int</span></code>, optional) – x coordiate to press. If y is used, x must also be set</p></li>
+<li><p><strong>y</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">int</span></code>, optional) – y coordiate to press. If x is used, y must also be set</p></li>
+<li><p><strong>duration</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">int</span></code>, optional) – Duration to press</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>self instance</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><cite>TouchAction</cite></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="appium.webdriver.common.touch_action.TouchAction.move_to">
+<code class="sig-name descname">move_to</code><span class="sig-paren">(</span><em class="sig-param">el=None</em>, <em class="sig-param">x=None</em>, <em class="sig-param">y=None</em><span class="sig-paren">)</span><a class="headerlink" href="#appium.webdriver.common.touch_action.TouchAction.move_to" title="Permalink to this definition">¶</a></dt>
+<dd><p>Move the pointer from the previous point to the element or point specified</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>el</strong> (<a class="reference internal" href="appium.webdriver.html#appium.webdriver.webelement.WebElement" title="appium.webdriver.webelement.WebElement"><code class="xref py py-obj docutils literal notranslate"><span class="pre">appium.webdriver.webelement.WebElement</span></code></a>, optional) – the element to be moved to</p></li>
+<li><p><strong>x</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">int</span></code>, optional) – x coordiate to be moved to. If y is used, x must also be set</p></li>
+<li><p><strong>y</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">int</span></code>, optional) – y coordiate to be moved to. If x is used, y must also be set</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>self instance</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><cite>TouchAction</cite></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="appium.webdriver.common.touch_action.TouchAction.perform">
+<code class="sig-name descname">perform</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#appium.webdriver.common.touch_action.TouchAction.perform" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform the action by sending the commands to the server to be operated upon</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>self instance</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><cite>TouchAction</cite></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="appium.webdriver.common.touch_action.TouchAction.press">
+<code class="sig-name descname">press</code><span class="sig-paren">(</span><em class="sig-param">el=None</em>, <em class="sig-param">x=None</em>, <em class="sig-param">y=None</em>, <em class="sig-param">pressure=None</em><span class="sig-paren">)</span><a class="headerlink" href="#appium.webdriver.common.touch_action.TouchAction.press" title="Permalink to this definition">¶</a></dt>
+<dd><p>Begin a chain with a press down action at a particular element or point</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>el</strong> (<a class="reference internal" href="appium.webdriver.html#appium.webdriver.webelement.WebElement" title="appium.webdriver.webelement.WebElement"><code class="xref py py-obj docutils literal notranslate"><span class="pre">appium.webdriver.webelement.WebElement</span></code></a>, optional) – the element to press</p></li>
+<li><p><strong>x</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">int</span></code>, optional) – x coordiate to press. If y is used, x must also be set</p></li>
+<li><p><strong>y</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">int</span></code>, optional) – y coordiate to press. If x is used, y must also be set</p></li>
+<li><p><strong>pressure</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code>, optional) – [iOS Only] press as force touch. Read the description of <cite>force</cite> property on Apple’s UITouch class
+(<a class="reference external" href="https://developer.apple.com/documentation/uikit/uitouch?language=objc">https://developer.apple.com/documentation/uikit/uitouch?language=objc</a>) for more details on possible value ranges.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>self instance</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><cite>TouchAction</cite></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="appium.webdriver.common.touch_action.TouchAction.release">
+<code class="sig-name descname">release</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#appium.webdriver.common.touch_action.TouchAction.release" title="Permalink to this definition">¶</a></dt>
+<dd><p>End the action by lifting the pointer off the screen</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>self instance</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><cite>TouchAction</cite></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="appium.webdriver.common.touch_action.TouchAction.tap">
+<code class="sig-name descname">tap</code><span class="sig-paren">(</span><em class="sig-param">element=None</em>, <em class="sig-param">x=None</em>, <em class="sig-param">y=None</em>, <em class="sig-param">count=1</em><span class="sig-paren">)</span><a class="headerlink" href="#appium.webdriver.common.touch_action.TouchAction.tap" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform a tap action on the element</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>element</strong> (<cite>appium.webdriver.webelement.WebElement</cite>) – the element to tap</p></li>
+<li><p><strong>x</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">int</span></code>, optional) – x coordinate to tap, relative to the top left corner of the element.</p></li>
+<li><p><strong>y</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">int</span></code>, optional) – y coordinate. If y is used, x must also be set, and vice versa</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>self instance</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><cite>TouchAction</cite></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="appium.webdriver.common.touch_action.TouchAction.wait">
+<code class="sig-name descname">wait</code><span class="sig-paren">(</span><em class="sig-param">ms=0</em><span class="sig-paren">)</span><a class="headerlink" href="#appium.webdriver.common.touch_action.TouchAction.wait" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pause for <cite>ms</cite> milliseconds.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>ms</strong> (<em>int</em>) – The time to pause</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>self instance</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><cite>TouchAction</cite></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-appium.webdriver.common">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-appium.webdriver.common" title="Permalink to this headline">¶</a></h2>
+<p>Appium Python Client: WebDriver common classes</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="appium.webdriver.extensions.html" class="btn btn-neutral float-right" title="appium.webdriver.extensions package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="appium.webdriver.html" class="btn btn-neutral float-left" title="appium.webdriver package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Author
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

@@ -1,0 +1,311 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>appium.webdriver.appium_service &#8212; appium  documentation</title>
+    <link rel="stylesheet" href="../../../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">appium  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for appium.webdriver.appium_service</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python</span>
+
+<span class="c1"># Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);</span>
+<span class="c1"># you may not use this file except in compliance with the License.</span>
+<span class="c1"># You may obtain a copy of the License at</span>
+<span class="c1">#</span>
+<span class="c1">#     http://www.apache.org/licenses/LICENSE-2.0</span>
+<span class="c1">#</span>
+<span class="c1"># Unless required by applicable law or agreed to in writing, software</span>
+<span class="c1"># distributed under the License is distributed on an &quot;AS IS&quot; BASIS,</span>
+<span class="c1"># WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</span>
+<span class="c1"># See the License for the specific language governing permissions and</span>
+<span class="c1"># limitations under the License.</span>
+
+
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">subprocess</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">time</span>
+
+<span class="kn">import</span> <span class="nn">urllib3</span>
+
+<span class="n">DEFAULT_HOST</span> <span class="o">=</span> <span class="s1">&#39;127.0.0.1&#39;</span>
+<span class="n">DEFAULT_PORT</span> <span class="o">=</span> <span class="mi">4723</span>
+<span class="n">STARTUP_TIMEOUT_MS</span> <span class="o">=</span> <span class="mi">60000</span>
+<span class="n">MAIN_SCRIPT_PATH</span> <span class="o">=</span> <span class="s1">&#39;appium/build/lib/main.js&#39;</span>
+<span class="n">STATUS_URL</span> <span class="o">=</span> <span class="s1">&#39;/wd/hub/status&#39;</span>
+
+
+<div class="viewcode-block" id="find_executable"><a class="viewcode-back" href="../../../appium.webdriver.html#appium.webdriver.appium_service.find_executable">[docs]</a><span class="k">def</span> <span class="nf">find_executable</span><span class="p">(</span><span class="n">executable</span><span class="p">):</span>
+    <span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;PATH&#39;</span><span class="p">]</span>
+    <span class="n">paths</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">pathsep</span><span class="p">)</span>
+    <span class="n">base</span><span class="p">,</span> <span class="n">ext</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">executable</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">platform</span> <span class="o">==</span> <span class="s1">&#39;win32&#39;</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">ext</span><span class="p">:</span>
+        <span class="n">executable</span> <span class="o">=</span> <span class="n">executable</span> <span class="o">+</span> <span class="s1">&#39;.exe&#39;</span>
+
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">executable</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">executable</span>
+
+    <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">paths</span><span class="p">:</span>
+        <span class="n">full_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">executable</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">full_path</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">full_path</span>
+
+    <span class="k">return</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="poll_url"><a class="viewcode-back" href="../../../appium.webdriver.html#appium.webdriver.appium_service.poll_url">[docs]</a><span class="k">def</span> <span class="nf">poll_url</span><span class="p">(</span><span class="n">host</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">timeout_ms</span><span class="p">):</span>
+    <span class="n">time_started_sec</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+    <span class="k">while</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">&lt;</span> <span class="n">time_started_sec</span> <span class="o">+</span> <span class="n">timeout_ms</span> <span class="o">/</span> <span class="mf">1000.0</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">conn</span> <span class="o">=</span> <span class="n">urllib3</span><span class="o">.</span><span class="n">PoolManager</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+            <span class="n">resp</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="s1">&#39;HEAD&#39;</span><span class="p">,</span> <span class="s1">&#39;http://</span><span class="si">{host}</span><span class="s1">:</span><span class="si">{port}{path}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">host</span><span class="o">=</span><span class="n">host</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="n">port</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="n">path</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">resp</span><span class="o">.</span><span class="n">status</span> <span class="o">&lt;</span> <span class="mi">400</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span>
+    <span class="k">return</span> <span class="kc">False</span></div>
+
+
+<div class="viewcode-block" id="AppiumServiceError"><a class="viewcode-back" href="../../../appium.webdriver.html#appium.webdriver.appium_service.AppiumServiceError">[docs]</a><span class="k">class</span> <span class="nc">AppiumServiceError</span><span class="p">(</span><span class="ne">RuntimeError</span><span class="p">):</span>
+    <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="AppiumService"><a class="viewcode-back" href="../../../appium.webdriver.html#appium.webdriver.appium_service.AppiumService">[docs]</a><span class="k">class</span> <span class="nc">AppiumService</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_process</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cmd</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">def</span> <span class="nf">_get_node</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_node_executable&#39;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_node_executable</span> <span class="o">=</span> <span class="n">find_executable</span><span class="p">(</span><span class="s1">&#39;node&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_node_executable</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">AppiumServiceError</span><span class="p">(</span><span class="s1">&#39;NodeJS main executable cannot be found. &#39;</span> <span class="o">+</span>
+                                     <span class="s1">&#39;Make sure it is installed and present in PATH&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_node_executable</span>
+
+    <span class="k">def</span> <span class="nf">_get_npm</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_npm_executable&#39;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_npm_executable</span> <span class="o">=</span> <span class="n">find_executable</span><span class="p">(</span><span class="s1">&#39;npm.cmd&#39;</span> <span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">platform</span> <span class="o">==</span> <span class="s1">&#39;win32&#39;</span> <span class="k">else</span> <span class="s1">&#39;npm&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_npm_executable</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">AppiumServiceError</span><span class="p">(</span><span class="s1">&#39;Node Package Manager executable cannot be found. &#39;</span> <span class="o">+</span>
+                                     <span class="s1">&#39;Make sure it is installed and present in PATH&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_npm_executable</span>
+
+    <span class="k">def</span> <span class="nf">_get_main_script</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_main_script&#39;</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">args</span> <span class="ow">in</span> <span class="p">[[</span><span class="s1">&#39;root&#39;</span><span class="p">,</span> <span class="s1">&#39;-g&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;root&#39;</span><span class="p">]]:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">modules_root</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">check_output</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_npm</span><span class="p">()]</span> <span class="o">+</span> <span class="n">args</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">modules_root</span><span class="p">,</span> <span class="n">MAIN_SCRIPT_PATH</span><span class="p">)):</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_main_script</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">modules_root</span><span class="p">,</span> <span class="n">MAIN_SCRIPT_PATH</span><span class="p">)</span>
+                        <span class="k">break</span>
+                <span class="k">except</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">CalledProcessError</span><span class="p">:</span>
+                    <span class="k">continue</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_main_script&#39;</span><span class="p">):</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_main_script</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">check_output</span><span class="p">(</span>
+                        <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_node</span><span class="p">(),</span>
+                         <span class="s1">&#39;-e&#39;</span><span class="p">,</span>
+                         <span class="s1">&#39;console.log(require.resolve(&quot;</span><span class="si">{}</span><span class="s1">&quot;))&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">MAIN_SCRIPT_PATH</span><span class="p">)])</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                <span class="k">except</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">CalledProcessError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="n">AppiumServiceError</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">output</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_main_script</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_parse_port</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">arg</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">args</span> <span class="ow">or</span> <span class="p">[]):</span>
+            <span class="k">if</span> <span class="n">arg</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;--port&#39;</span><span class="p">,</span> <span class="s1">&#39;-p&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">idx</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="n">idx</span> <span class="o">+</span> <span class="mi">1</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">DEFAULT_PORT</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_parse_host</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">arg</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">args</span> <span class="ow">or</span> <span class="p">[]):</span>
+            <span class="k">if</span> <span class="n">arg</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;--address&#39;</span><span class="p">,</span> <span class="s1">&#39;-a&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">idx</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">args</span><span class="p">[</span><span class="n">idx</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">DEFAULT_HOST</span>
+
+<div class="viewcode-block" id="AppiumService.start"><a class="viewcode-back" href="../../../appium.webdriver.html#appium.webdriver.appium_service.AppiumService.start">[docs]</a>    <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Starts Appium service with given arguments.</span>
+
+<span class="sd">        The service will be forcefully restarted if it is already running.</span>
+
+<span class="sd">        Keyword Args:</span>
+<span class="sd">            env (dict): Environment variables mapping. The default system environment,</span>
+<span class="sd">                which is inherited from the parent process is assigned by default.</span>
+<span class="sd">            node (str): The full path to the main NodeJS executable. The service will try</span>
+<span class="sd">                to retrieve it automatically by default.</span>
+<span class="sd">            stdout: Check on the documentation for subprocess.Popen for more details.</span>
+<span class="sd">                The default value is subprocess.PIPE.</span>
+<span class="sd">            stderr: Check on the documentation for subprocess.Popen for more details.</span>
+<span class="sd">                The default value is subprocess.PIPE.</span>
+<span class="sd">            timeout_ms (int): The maximum time to wait until Appium process starts listening</span>
+<span class="sd">                for HTTP connections. If set to zero or a negative number then no wait will be applied.</span>
+<span class="sd">                60000 ms by default</span>
+<span class="sd">            main_script (str): The full path to the main Appium executable</span>
+<span class="sd">                (usually located this is build/lib/main.js). If this is not set</span>
+<span class="sd">                then the service tries to detect the path automatically.</span>
+<span class="sd">            args (str): List of Appium arguments (all must be strings). Check on</span>
+<span class="sd">                https://appium.io/docs/en/writing-running-appium/server-args/ for more details</span>
+<span class="sd">                about possible arguments and their values.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            subprocess.Popen instance: You can use Popen.communicate interface</span>
+<span class="sd">                or stderr/stdout properties of the instance</span>
+<span class="sd">                (stdout/stderr must not be set to None in such case)</span>
+<span class="sd">                in order to retrieve the actual process output.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+
+        <span class="n">env</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;env&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="s1">&#39;env&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="n">node</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;node&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="s1">&#39;node&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_node</span><span class="p">()</span>
+        <span class="n">stdout</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;stdout&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="s1">&#39;stdout&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span> <span class="k">else</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span>
+        <span class="n">stderr</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;stderr&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="s1">&#39;stderr&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span> <span class="k">else</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span>
+        <span class="n">timeout_ms</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;timeout_ms&#39;</span><span class="p">])</span> <span class="k">if</span> <span class="s1">&#39;timeout_ms&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span> <span class="k">else</span> <span class="n">STARTUP_TIMEOUT_MS</span>
+        <span class="n">main_script</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;main_script&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="s1">&#39;main_script&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_main_script</span><span class="p">()</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="p">[</span><span class="n">node</span><span class="p">,</span> <span class="n">main_script</span><span class="p">]</span>
+        <span class="k">if</span> <span class="s1">&#39;args&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+            <span class="n">args</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;args&#39;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cmd</span> <span class="o">=</span> <span class="n">args</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_process</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">Popen</span><span class="p">(</span><span class="n">args</span><span class="o">=</span><span class="n">args</span><span class="p">,</span> <span class="n">stdout</span><span class="o">=</span><span class="n">stdout</span><span class="p">,</span> <span class="n">stderr</span><span class="o">=</span><span class="n">stderr</span><span class="p">,</span> <span class="n">env</span><span class="o">=</span><span class="n">env</span><span class="p">)</span>
+        <span class="n">host</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parse_host</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+        <span class="n">port</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parse_port</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+        <span class="n">error_msg</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_running</span> <span class="ow">or</span> <span class="p">(</span><span class="n">timeout_ms</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">poll_url</span><span class="p">(</span><span class="n">host</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">STATUS_URL</span><span class="p">,</span> <span class="n">timeout_ms</span><span class="p">)):</span>
+            <span class="n">error_msg</span> <span class="o">=</span> <span class="s1">&#39;Appium has failed to start on </span><span class="si">{}</span><span class="s1">:</span><span class="si">{}</span><span class="s1"> within </span><span class="si">{}</span><span class="s1">ms timeout&#39;</span>\
+                        <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">host</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">timeout_ms</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">error_msg</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">stderr</span> <span class="o">==</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">:</span>
+                <span class="n">err_output</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_process</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">err_output</span><span class="p">:</span>
+                    <span class="n">error_msg</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Original error: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">err_output</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+            <span class="k">raise</span> <span class="n">AppiumServiceError</span><span class="p">(</span><span class="n">error_msg</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_process</span></div>
+
+<div class="viewcode-block" id="AppiumService.stop"><a class="viewcode-back" href="../../../appium.webdriver.html#appium.webdriver.appium_service.AppiumService.stop">[docs]</a>    <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Stops Appium service if it is running.</span>
+
+<span class="sd">        The call will be ignored if the service is not running</span>
+<span class="sd">        or has been already stopped.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bool: `True` if the service was running before being stopped</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">is_terminated</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_running</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_process</span><span class="o">.</span><span class="n">terminate</span><span class="p">()</span>
+            <span class="n">is_terminated</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_process</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cmd</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="n">is_terminated</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">is_running</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Check if the service is running.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bool: `True` or `False`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_process</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_process</span><span class="o">.</span><span class="n">poll</span><span class="p">()</span> <span class="ow">is</span> <span class="kc">None</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">is_listening</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Check if the service is listening on the given/default host/port.</span>
+
+<span class="sd">        The fact, that the service is running, does not always mean it is listening.</span>
+<span class="sd">        the default host/port values can be customized by providing --address/--port</span>
+<span class="sd">        command line arguments while starting the service.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bool: `True` if the service is running and listening on the given/default host/port</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_running</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cmd</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="n">host</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parse_host</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cmd</span><span class="p">)</span>
+        <span class="n">port</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parse_port</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cmd</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_running</span> <span class="ow">and</span> <span class="n">poll_url</span><span class="p">(</span><span class="n">host</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">STATUS_URL</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span></div>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="k">assert</span><span class="p">(</span><span class="n">find_executable</span><span class="p">(</span><span class="s1">&#39;node&#39;</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="k">assert</span><span class="p">(</span><span class="n">find_executable</span><span class="p">(</span><span class="s1">&#39;npm&#39;</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="n">service</span> <span class="o">=</span> <span class="n">AppiumService</span><span class="p">()</span>
+    <span class="n">service</span><span class="o">.</span><span class="n">start</span><span class="p">(</span><span class="n">args</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;--address&#39;</span><span class="p">,</span> <span class="s1">&#39;127.0.0.1&#39;</span><span class="p">,</span> <span class="s1">&#39;-p&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">DEFAULT_PORT</span><span class="p">)])</span>
+    <span class="c1"># service.start(args=[&#39;--address&#39;, &#39;127.0.0.1&#39;, &#39;-p&#39;, &#39;80&#39;], timeout_ms=2000)</span>
+    <span class="k">assert</span><span class="p">(</span><span class="n">service</span><span class="o">.</span><span class="n">is_running</span><span class="p">)</span>
+    <span class="k">assert</span><span class="p">(</span><span class="n">service</span><span class="o">.</span><span class="n">is_listening</span><span class="p">)</span>
+    <span class="n">service</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+    <span class="k">assert</span><span class="p">(</span><span class="ow">not</span> <span class="n">service</span><span class="o">.</span><span class="n">is_running</span><span class="p">)</span>
+    <span class="k">assert</span><span class="p">(</span><span class="ow">not</span> <span class="n">service</span><span class="o">.</span><span class="n">is_listening</span><span class="p">)</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">appium  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2019, Author.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.0.
+    </div>
+  </body>
+</html>
