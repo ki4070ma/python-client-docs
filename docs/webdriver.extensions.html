@@ -717,9 +717,9 @@ If unset, return <code class="xref py py-func docutils literal notranslate"><spa
 which complies to ISO-8601</p>
 </dd>
 </dl>
-<dl class="simple">
-<dt>Usage:</dt><dd><p>self.driver.get_device_time()
-self.driver.get_device_time(“YYYY-MM-DD”)</p>
+<dl>
+<dt>Usage:</dt><dd><p>self.driver.get_device_time()</p>
+<p>self.driver.get_device_time(“YYYY-MM-DD”)</p>
 </dd>
 </dl>
 <dl class="field-list simple">
@@ -756,10 +756,10 @@ scripts and the output format.</p>
 </ul>
 </dd>
 </dl>
-<dl class="simple">
-<dt>Usage:</dt><dd><p>self.driver.execute_driver(script=’return [];’)
-self.driver.execute_driver(script=’return [];’, script_type=’webdriverio’)
-self.driver.execute_driver(script=’return [];’, script_type=’webdriverio’, timeout_ms=10000)</p>
+<dl>
+<dt>Usage:</dt><dd><p>self.driver.execute_driver(script=’return [];’)</p>
+<p>self.driver.execute_driver(script=’return [];’, script_type=’webdriverio’)</p>
+<p>self.driver.execute_driver(script=’return [];’, script_type=’webdriverio’, timeout_ms=10000)</p>
 </dd>
 </dl>
 <dl class="field-list simple">
@@ -1329,9 +1329,9 @@ Possible keycodes can be found in <a class="reference external" href="http://dev
 <dd class="field-odd"><p><strong>type</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – The event type to filter with</p>
 </dd>
 </dl>
-<dl class="simple">
-<dt>Usage:</dt><dd><p>events = driver.get_events()
-events = driver.get_events([‘appium:funEvent’])</p>
+<dl>
+<dt>Usage:</dt><dd><p>events = driver.get_events()</p>
+<p>events = driver.get_events([‘appium:funEvent’])</p>
 </dd>
 </dl>
 <dl class="field-list simple">
