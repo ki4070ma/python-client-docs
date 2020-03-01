@@ -426,15 +426,50 @@ or has been already stopped.</p>
 </div>
 <div class="section" id="module-webdriver.connectiontype">
 <span id="webdriver-connectiontype-module"></span><h2>webdriver.connectiontype module<a class="headerlink" href="#module-webdriver.connectiontype" title="Permalink to this headline">¶</a></h2>
-<dl class="simple">
-<dt>Connection types are specified here:</dt><dd><p><a class="reference external" href="https://code.google.com/p/selenium/source/browse/spec-draft.md?repo=mobile#120">https://code.google.com/p/selenium/source/browse/spec-draft.md?repo=mobile#120</a>
-Value (Alias)      | Data | Wifi | Airplane Mode
-————————————————-
-0 (None)           | 0    | 0    | 0
-1 (Airplane Mode)  | 0    | 0    | 1
-2 (Wifi only)      | 0    | 1    | 0
-4 (Data only)      | 1    | 0    | 0
-6 (All network on) | 1    | 1    | 0</p>
+<dl>
+<dt>Connection types are specified here:</dt><dd><p><a class="reference external" href="https://code.google.com/p/selenium/source/browse/spec-draft.md?repo=mobile#120">https://code.google.com/p/selenium/source/browse/spec-draft.md?repo=mobile#120</a></p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 43%" />
+<col style="width: 13%" />
+<col style="width: 13%" />
+<col style="width: 32%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Value (Alias)</p></th>
+<th class="head"><p>Data</p></th>
+<th class="head"><p>Wifi</p></th>
+<th class="head"><p>Airplane Mode</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>0 (None)</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+</tr>
+<tr class="row-odd"><td><p>1 (Airplane Mode)</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>1</p></td>
+</tr>
+<tr class="row-even"><td><p>2 (Wifi only)</p></td>
+<td><p>0</p></td>
+<td><p>1</p></td>
+<td><p>0</p></td>
+</tr>
+<tr class="row-odd"><td><p>4 (Data only)</p></td>
+<td><p>1</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+</tr>
+<tr class="row-even"><td><p>6 (All network on)</p></td>
+<td><p>1</p></td>
+<td><p>1</p></td>
+<td><p>0</p></td>
+</tr>
+</tbody>
+</table>
 </dd>
 </dl>
 <dl class="class">
